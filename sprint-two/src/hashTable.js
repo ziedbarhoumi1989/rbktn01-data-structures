@@ -3,36 +3,43 @@
 var HashTable = function() {
   this._limit = 8;
   this._storage = LimitedArray(this._limit);
-  this.visited = [];
-  
 };
 
 
 
 HashTable.prototype.insert = function(k, v) {
   var index = getIndexBelowMaxForKey(k, this._limit);
-
-  if(this._storage.get(index)===undefined || this.visited.includes(k)) {
-    this._storage.set(index,LinkedList())
+  if(!this._storage.get(index))
+    this._storage.set(index, []);
+  if(!this.retrieve(k))
+    this._storage.get(index).push([k, v])
+  else{
+    var arr = this._storage.get(index);
+    for(var i in arr){
+      if(arr[i][0]===k)
+        arr[i][1] = v;
+      }
   }
-  this._storage.get(index).addToTail(v)
-  this.visited.push(k)
+
 };
 
 HashTable.prototype.retrieve = function(k) {
   var index = getIndexBelowMaxForKey(k, this._limit);
-  if(!this._storage.get(index)) {
-    return undefined
+  var arr = this._storage.get(index);
+  for(var i in arr){
+    if(arr[i][0]===k)
+      return arr[i][1]
   }
-  this.visited.splice(this.visited.indexOf(k),1)
-    return this._storage.get(index).removeHead()
-  
-    	
+  return undefined
 };
 
 HashTable.prototype.remove = function(k) {
   var index = getIndexBelowMaxForKey(k, this._limit);
-  this._storage.set(index,undefined)
+  var arr = this._storage.get(index);
+  for(var i in arr){
+    if(arr[i][0]===k)
+      arr.splice(i,1)
+  }
 };
 
 
