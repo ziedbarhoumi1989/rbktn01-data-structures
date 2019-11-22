@@ -3,26 +3,31 @@
 var HashTable = function() {
   this._limit = 8;
   this._storage = LimitedArray(this._limit);
+  this.visited = [];
+  
 };
+
+
 
 HashTable.prototype.insert = function(k, v) {
   var index = getIndexBelowMaxForKey(k, this._limit);
-  var a = this._storage.get(index)
-  if(!a) {
-  	this._storage.set(index,[v,a])
+
+  if(this._storage.get(index)===undefined || this.visited.includes(k)) {
+    this._storage.set(index,LinkedList())
   }
-  else
-  this._storage.set(index,v)
+  this._storage.get(index).addToTail(v)
+  this.visited.push(k)
 };
 
 HashTable.prototype.retrieve = function(k) {
   var index = getIndexBelowMaxForKey(k, this._limit);
-   var a = this._storage.get(index)
-   if(Array.isArray(a)) {
-   	var b=a.pop()
-   	if()
-   }
-   return a
+  if(!this._storage.get(index)) {
+    return undefined
+  }
+  this.visited.splice(this.visited.indexOf(k),1)
+    return this._storage.get(index).removeHead()
+  
+    	
 };
 
 HashTable.prototype.remove = function(k) {
